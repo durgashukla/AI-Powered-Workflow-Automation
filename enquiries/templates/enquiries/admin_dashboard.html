@@ -1,0 +1,264 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard</title>
+
+    <link rel="stylesheet" href="{% static 'enquiries/css/dashboard.css' %}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<div class="dashboard-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+            <h2>Workflow AI</h2>
+            <p>Admin Panel</p>
+        </div>
+
+        <nav class="sidebar-menu">
+
+            <a href="#dashboard" class="active">
+                Dashboard
+            </a>
+
+            <a href="{% url 'customer_enquiries' %}">
+                Customer Enquiries
+            </a>
+
+            <a href="#about">
+                About
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <form method="POST" action="{% url 'admin_logout' %}">
+                {% csrf_token %}
+
+                <button type="submit" class="logout-button">
+                    Logout
+                </button>
+            </form>
+
+        </div>
+
+    </aside>
+
+
+    <!-- Main Content -->
+    <main class="main-content" id="dashboard">
+
+        <!-- Topbar -->
+        <header class="topbar">
+
+            <div>
+                <h1>Dashboard</h1>
+                <p>Welcome to your Admin Panel</p>
+            </div>
+
+        </header>
+
+
+        <!-- Summary Cards -->
+        <section class="stats">
+
+            <div class="stat-card">
+                <p>Total Enquiries</p>
+                <h2>{{ total_enquiries }}</h2>
+            </div>
+
+            <div class="stat-card">
+                <p>New Enquiries</p>
+                <h2>{{ new_enquiries }}</h2>
+            </div>
+
+            <div class="stat-card">
+                <p>High Priority</p>
+                <h2>{{ high_priority }}</h2>
+            </div>
+
+            <div class="stat-card">
+                <p>In Progress</p>
+                <h2>{{ in_progress }}</h2>
+            </div>
+
+            <div class="stat-card">
+                <p>Converted</p>
+                <h2>{{ converted }}</h2>
+            </div>
+
+        </section>
+
+
+        <!-- Charts -->
+        <section class="charts">
+
+            <!-- Category Chart -->
+            <div class="chart-card">
+
+                <h2>Category Distribution</h2>
+
+                <div class="chart-container">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+
+            </div>
+
+
+            <!-- Priority Chart -->
+            <div class="chart-card">
+
+                <h2>Priority Distribution</h2>
+
+                <div class="chart-container">
+                    <canvas id="priorityChart"></canvas>
+                </div>
+
+                <div class="priority-counts">
+
+                    {% for item in priority_distribution %}
+
+                        <div class="priority-count">
+
+                            <span>{{ item.label }}</span>
+
+                            <strong>{{ item.total }}</strong>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- New Enquiries -->
+        <section class="section" id="customer-enquiries">
+
+            <div class="section-heading">
+
+                <h2>New Enquiries</h2>
+
+                <a href="{% url 'customer_enquiries' %}">
+                    View All Enquiries
+                </a>
+
+            </div>
+
+
+            <!-- New Enquiries Table -->
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Customer Name</th>
+                            <th>Email</th>
+                            <th>Phone Number</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for enquiry in enquiries %}
+
+                            <tr>
+
+                                <td>{{ enquiry.customer_name }}</td>
+
+                                <td>{{ enquiry.email }}</td>
+
+                                <td>{{ enquiry.phone_number }}</td>
+
+                                <td>
+                                    {{ enquiry.get_priority_display }}
+                                </td>
+
+                                <td>
+                                    {{ enquiry.get_status_display }}
+                                </td>
+
+                                <td>
+
+                                    <a
+                                        href="{% url 'enquiry_detail' enquiry.id %}"
+                                        class="view-button"
+                                    >
+                                        View
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                        {% empty %}
+
+                            <tr>
+                                <td colspan="6">
+                                    No new enquiries available.
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- About Section -->
+        <section class="section about-section" id="about">
+
+            <h2>About This System</h2>
+
+            <p>
+                AI-Powered Workflow Automation System helps manage
+                customer enquiries using AI-based analysis,
+                categorization and priority detection.
+            </p>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- Chart Data -->
+{{ category_distribution|json_script:"category-data" }}
+
+{{ priority_distribution|json_script:"priority-data" }}
+
+
+<!-- JavaScript -->
+<script src="{% static 'enquiries/js/dashboard.js' %}"></script>
+
+</body>
+</html>

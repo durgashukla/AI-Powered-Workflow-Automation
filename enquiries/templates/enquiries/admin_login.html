@@ -1,0 +1,111 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Login | Workflow AI</title>
+
+    <link rel="stylesheet" href="{% static 'enquiries/css/admin_login.css' %}">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo">Workflow AI</div>
+
+        <a href="{% url 'submit_enquiry' %}">Customer Portal</a>
+    </nav>
+
+    <main class="login-container">
+
+        <section class="login-info">
+
+            <span class="tag">ADMINISTRATION PANEL</span>
+
+            <h1>Welcome Back!</h1>
+
+            <p>
+                Manage customer enquiries, review AI-powered analysis,
+                track leads and monitor your business workflow
+                from one place.
+            </p>
+
+            <div class="features">
+                <p>✓ Manage Customer Enquiries</p>
+                <p>✓ Review AI Analysis</p>
+                <p>✓ Track Lead Priorities</p>
+                <p>✓ Monitor Dashboard Analytics</p>
+            </div>
+
+        </section>
+
+
+        <section class="login-card">
+
+            <div class="login-icon">🔐</div>
+
+            <h2>Admin Login</h2>
+
+            <p class="subtitle">
+                Enter your credentials to access the dashboard.
+            </p>
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="error-message">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}">
+                        Username
+                    </label>
+
+                    {{ form.username }}
+
+                    {% for error in form.username.errors %}
+                        <p class="error-message">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.password.id_for_label }}">
+                        Password
+                    </label>
+
+                    {{ form.password }}
+
+                    {% for error in form.password.errors %}
+                        <p class="error-message">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <button type="submit" class="login-button">
+                    Login to Dashboard →
+                </button>
+
+            </form>
+
+            <p class="security-text">
+                🔒 Secure access for authorized administrators only.
+            </p>
+
+        </section>
+
+    </main>
+
+    <footer>
+        © 2026 Workflow AI. All Rights Reserved.
+    </footer>
+
+</body>
+</html>

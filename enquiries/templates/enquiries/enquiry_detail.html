@@ -1,0 +1,214 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Enquiry Details | Workflow AI</title>
+
+    <link rel="stylesheet" href="{% static 'enquiries/css/detail.css' %}">
+</head>
+
+<body>
+
+<div class="page-container">
+
+    <!-- Header -->
+    <header class="page-header">
+
+        <div>
+            <p class="breadcrumb">Admin Panel / Customer Enquiries</p>
+            <h1>Enquiry Details</h1>
+            <p class="subtitle">View and manage customer enquiry information</p>
+        </div>
+
+        <a href="{% url 'admin_dashboard' %}" class="back-button">
+            ← Back to Dashboard
+        </a>
+
+    </header>
+
+
+    <!-- Customer Information -->
+    <section class="detail-card">
+
+        <div class="card-heading">
+            <h2>Customer Information</h2>
+        </div>
+
+        <div class="info-grid">
+
+            <div class="info-item">
+                <span>Customer Name</span>
+                <strong>{{ enquiry.customer_name }}</strong>
+            </div>
+
+            <div class="info-item">
+                <span>Email Address</span>
+                <strong>{{ enquiry.email }}</strong>
+            </div>
+
+            <div class="info-item">
+                <span>Phone Number</span>
+                <strong>{{ enquiry.phone_number }}</strong>
+            </div>
+
+            <div class="info-item">
+                <span>Enquiry Date</span>
+                <strong>{{ enquiry.created_at|date:"d M Y, h:i A" }}</strong>
+            </div>
+
+        </div>
+
+        <div class="message-box">
+            <h3>Customer Message</h3>
+            <p>{{ enquiry.message }}</p>
+        </div>
+
+    </section>
+
+
+    <!-- AI Analysis -->
+    <section class="detail-card">
+
+        <div class="card-heading">
+            <h2>AI Analysis</h2>
+            <span class="ai-label">AI Generated</span>
+        </div>
+
+        <div class="analysis-grid">
+
+            <div class="analysis-item">
+                <span>Service Category</span>
+                <strong>{{ enquiry.get_category_display }}</strong>
+            </div>
+
+            <div class="analysis-item">
+                <span>Estimated Budget</span>
+                <strong>{{ enquiry.budget|default:"Not specified" }}</strong>
+            </div>
+
+            <div class="analysis-item">
+                <span>Location</span>
+                <strong>{{ enquiry.location|default:"Not specified" }}</strong>
+            </div>
+
+            <div class="analysis-item">
+                <span>Priority</span>
+                <strong class="priority-value">
+                    {{ enquiry.get_priority_display }}
+                </strong>
+            </div>
+
+        </div>
+
+        <div class="content-block">
+
+            <h3>Project Requirements</h3>
+
+            <ul class="requirements-list">
+
+                {% for requirement in enquiry.requirements %}
+                    <li>{{ requirement }}</li>
+                {% empty %}
+                    <li>No requirements found.</li>
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+
+        <div class="content-block">
+
+            <h3>Missing Information</h3>
+
+            <p>{{ enquiry.missing_information|default:"No missing information." }}</p>
+
+        </div>
+
+
+        <div class="summary-box">
+
+            <h3>AI Summary</h3>
+
+            <p>{{ enquiry.ai_summary|default:"No summary available." }}</p>
+
+        </div>
+
+    </section>
+
+
+    <!-- Suggested Response -->
+    <section class="detail-card">
+
+        <div class="card-heading">
+            <h2>AI Suggested Response</h2>
+            <span class="ai-label">Editable</span>
+        </div>
+
+        <p class="section-description">
+            Review and edit the AI-generated response before using it.
+        </p>
+
+        <form method="POST" class="response-form">
+
+            {% csrf_token %}
+
+            {{ response_form.as_p }}
+
+            <button type="submit" name="save_response" class="primary-button">
+                Save Edited Response
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- Update Status -->
+    <section class="detail-card">
+
+        <div class="card-heading">
+            <h2>Manage Enquiry Status</h2>
+        </div>
+
+        <p class="current-status">
+            Current Status:
+            <strong>{{ enquiry.get_status_display }}</strong>
+        </p>
+
+        <form method="POST" class="status-form">
+
+            {% csrf_token %}
+
+            <select name="status">
+
+                {% for value, label in enquiry.STATUS_CHOICES %}
+
+                    <option value="{{ value }}"
+                        {% if enquiry.status == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+            <button type="submit" class="primary-button">
+                Update Status
+            </button>
+
+        </form>
+
+    </section>
+
+
+</div>
+
+</body>
+</html>

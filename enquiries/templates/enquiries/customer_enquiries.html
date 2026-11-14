@@ -1,0 +1,234 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Customer Enquiries</title>
+
+    <link rel="stylesheet" href="{% static 'enquiries/css/dashboard.css' %}">
+</head>
+
+<body>
+
+<div class="dashboard-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+            <h2>Workflow AI</h2>
+            <p>Admin Panel</p>
+        </div>
+
+        <nav class="sidebar-menu">
+
+            <a href="{% url 'admin_dashboard' %}">
+                Dashboard
+            </a>
+
+            <a href="{% url 'customer_enquiries' %}" class="active">
+                Customer Enquiries
+            </a>
+
+            <a href="{% url 'admin_dashboard' %}#about">
+                About
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <form method="POST" action="{% url 'admin_logout' %}">
+                {% csrf_token %}
+
+                <button type="submit" class="logout-button">
+                    Logout
+                </button>
+            </form>
+
+        </div>
+
+    </aside>
+
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Header -->
+        <header class="topbar">
+
+            <div>
+                <h1>Customer Enquiries</h1>
+                <p>Search and manage all customer enquiries</p>
+            </div>
+
+        </header>
+
+
+        <!-- Enquiry List -->
+        <section class="section">
+
+            <div class="section-heading">
+
+                <h2>All Customer Enquiries</h2>
+
+                <a href="{% url 'customer_enquiries' %}">
+                    Clear Filters
+                </a>
+
+            </div>
+
+
+            <!-- Search and Filters -->
+            <form method="GET" class="filter-form">
+
+                <!-- Search -->
+                <input
+                    type="text"
+                    name="search"
+                    placeholder="Search name, email or phone..."
+                    value="{{ search_query }}"
+                >
+
+
+                <!-- Category Filter -->
+                <select name="category">
+
+                    <option value="">All Categories</option>
+
+                    {% for value, label in categories %}
+
+                        <option value="{{ value }}"
+                            {% if selected_category == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+
+                <!-- Priority Filter -->
+                <select name="priority">
+
+                    <option value="">All Priorities</option>
+
+                    {% for value, label in priorities %}
+
+                        <option value="{{ value }}"
+                            {% if selected_priority == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+
+                <!-- Status Filter -->
+                <select name="status">
+
+                    <option value="">All Statuses</option>
+
+                    {% for value, label in statuses %}
+
+                        <option value="{{ value }}"
+                            {% if selected_status == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+
+                <button type="submit">
+                    Apply Filters
+                </button>
+
+            </form>
+
+
+            <!-- Enquiries Table -->
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Customer Name</th>
+                            <th>Email</th>
+                            <th>Phone Number</th>
+                            <th>Category</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for enquiry in enquiries %}
+
+                            <tr>
+
+                                <td>{{ enquiry.customer_name }}</td>
+
+                                <td>{{ enquiry.email }}</td>
+
+                                <td>{{ enquiry.phone_number }}</td>
+
+                                <td>{{ enquiry.get_category_display }}</td>
+
+                                <td>{{ enquiry.get_priority_display }}</td>
+
+                                <td>{{ enquiry.get_status_display }}</td>
+
+                                <td>
+
+                                    <a
+                                        href="{% url 'enquiry_detail' enquiry.id %}"
+                                        class="view-button"
+                                    >
+                                        View
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                        {% empty %}
+
+                            <tr>
+                                <td colspan="7">
+
+                                    {% if search_query or selected_category or selected_priority or selected_status %}
+                                        No enquiries found matching your filters.
+                                    {% else %}
+                                        No customer enquiries available.
+                                    {% endif %}
+
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

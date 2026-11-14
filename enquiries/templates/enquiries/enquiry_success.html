@@ -1,0 +1,67 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Thank You | Workflow AI</title>
+
+    <link rel="stylesheet" href="{% static 'enquiries/css/success.css' %}">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo">Workflow AI</div>
+        <a href="{% url 'submit_enquiry' %}">Home</a>
+    </nav>
+
+    <main class="success-container">
+
+        <div class="success-card">
+
+            <div class="success-icon">✓</div>
+
+            <span class="success-label">ENQUIRY SUBMITTED</span>
+
+            <h1>Thank You!</h1>
+
+            <h2>Your Enquiry Has Been Successfully Submitted.</h2>
+
+            <p>
+                We appreciate your interest in our services.
+                Our team will review your requirements and get back
+                to you soon.
+            </p>
+
+            <div class="info-box">
+                <strong>What's Next?</strong>
+                <p>
+                    Our AI system has received your enquiry.
+                    Our team will review the details and prepare
+                    a suitable response for you.
+                </p>
+            </div>
+
+            <a href="{% url 'submit_enquiry' %}" class="home-button">
+                Submit Another Enquiry →
+            </a>
+
+            <p class="footer-text">
+                Thank you for choosing Workflow AI.
+            </p>
+
+        </div>
+
+    </main>
+
+    <footer>
+        © 2026 Workflow AI. All Rights Reserved.
+    </footer>
+
+</body>
+</html>
